@@ -1,36 +1,42 @@
-# app/schemas.py
 
 # 第一步：永远从这里开始，导入 Pydantic 的 BaseModel
+# schemas classes are for data validation, like a filter
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from datetime import datetime
+from app.types import UserRole
+from app.utils import security
 
 
 # 1. User 相关的 Schemas
-
 # 基础类：把 Create 和 Response 共有的字段抽出来，减少重复代码
 class UserBase(BaseModel):
     username: str = Field(min_length=2, max_length=50)
     email: EmailStr  # Pydantic 会自动验证这是否是一个合法的邮箱格式
+    role: UserRole
 
-# 创建用户时的模具（前端传给我们的数据）
+# pwd separated
 class UserCreate(UserBase):
-    password: str = Field(min_length=8)  # 密码至少8位
+    password: str = Field(min_length=8,max_length=25)  
 
 class UserUpdate(BaseModel):
-    username: Optional[str]=Field()
+    username: Optional[str]=Field(default=None,min_length=2,max_length=50)
     email: Optional[EmailStr]=None
+    role: Optional[UserRole]=None
 
 class changePassword(BaseModel):
-    old_password: str = Field(min_length=8)
+    old_password: str = Field(min_length=8,max_length=25)
+    new_password: str = Field(min_length=8,max_length=25)
 
 # 返回给前端的模具（隐藏敏感信息）
 class UserResponse(UserBase):
     id: int
+    username:str
     role: str
     created_at: datetime
     # 核心配置：允许 Pydantic 直接从 SQLAlchemy 的数据库对象中提取属性
     model_config = {"from_attributes": True}
+
 
 
 # 2. ItemTemplate 相关的 Schemas
