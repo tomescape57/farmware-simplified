@@ -21,3 +21,5 @@ pip install fastapi uvicorn[standard] sqlalchemy python-dotenv passlib[bcrypt] p
 
 Run (under venv!):
 python3 -m uvicorn app.main:app --reload
+
+changed my email sep22 26.

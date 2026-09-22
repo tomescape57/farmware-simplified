@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from datetime import datetime,timezone
 from .database import Base
+from app import types
+
 
 class User(Base):
 
@@ -11,7 +13,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    role = Column(String, default="worker")  # admin, manager, worker
+    role = Column(String, default="normal", nullable=False)  # admin, manager, nromal
     created_at = Column(DateTime,  default= lambda: datetime.now(timezone.utc)) # lambda function to take real time
 
 
