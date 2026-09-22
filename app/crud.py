@@ -25,19 +25,20 @@ def create_user(db: Session, user: schemas.UserCreate):
 def get_user(db:Session,user_id:int):
     # using sqlalchemy  query grammar
     return db.query(models.User).filter(models.User.id == user_id).first()
+def get_user_byname(db:Session,username:str):
+    return db.query(models.User).filter(models.User.username == username).first()
+def get_user_byemail(db:Session,email:str):
+    return db.query(models.User).filter(models.User.email == email).first()
 
-def update_user(db:Session, _user_id:int, user_update: schemas.UserUpdate):
+def update_user(db:Session, user_id:int, user_update: schemas.UserUpdate):
     # find the user to update
-    db_user = db.query(models.User).filter(models.User.id == _user_id).first()
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if not db_user:
         return None
-
     # take non None field(字段?) only, from input user_update
     update_data = user_update.model_dump(exclude_unset=True)
-
     for field, value in update_data.items():
         setattr(db_user, field, value)
-
     db.commit()
     db.refresh(db_user)
     return db_user
