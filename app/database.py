@@ -13,7 +13,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# This dependency will be used in routers later
+# This dependency will be used in routers 
 def get_db():
     db = SessionLocal()
     try:

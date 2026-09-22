@@ -52,3 +52,13 @@ async def update_user(user_id:int, update_data:schemas.UserUpdate, _db:Session=D
     return crud.update_user(_db,user_id,update_data)
 
 
+# delete user 
+@router.delete("/{user_id}",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(user_id:int,_db:Session=Depends(get_db)):
+    # run and check exists
+    result = crud.delete_user(_db,user_id)
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {user_id} not found"
+        )
+    # 成功的话，什么都不返回，FastAPI 自动给 204
