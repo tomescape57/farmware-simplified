@@ -15,13 +15,13 @@ def get_current_user(
 ):
     try:
         payload = decode_token(token)
-        _user_id = payload.get("user_id")
-        if not _user_id:
+        user_id = payload.get("user_id")
+        if not user_id:
             raise HTTPException(status_code=401,detail="token format error")
     except Exception:
         raise HTTPException(status_code=401,detail="token invalid or expired")
 
-    db_user = crud.get_user(db=db,user_id=_user_id)
+    db_user = crud.get_user(db=db,user_id=user_id)
     if not db_user:
         raise HTTPException(status_code=401,detail="user not exist")
     return db_user
