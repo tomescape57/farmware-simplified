@@ -51,6 +51,9 @@ async def update_user(user_id:int, update_data:schemas.UserUpdate, _db:Session=D
             )
     return crud.update_user(_db,user_id,update_data)
 
+# update password
+
+
 
 # delete user 
 @router.delete("/{user_id}",status_code=status.HTTP_204_NO_CONTENT)

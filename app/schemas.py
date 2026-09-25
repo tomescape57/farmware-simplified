@@ -24,7 +24,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr]=None
     role: Optional[UserRole]=None
 
-class changePassword(BaseModel):
+class ChangePassword(BaseModel):
     old_password: str = Field(min_length=8,max_length=25)
     new_password: str = Field(min_length=8,max_length=25)
 

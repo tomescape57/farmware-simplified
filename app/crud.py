@@ -35,12 +35,28 @@ def update_user(db:Session, user_id:int, update_data: schemas.UserUpdate):
     if not db_user:
         return None
     # take non None field(字段?) only, from input user_update
-    _update_data = update_data.model_dump(exclude_unset=True)
-    for field, value in _update_data.items():
+    update_data = update_data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
         setattr(db_user, field, value)
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def change_pswd(db:Session,user_id:int,change_pswd: schemas.ChangePassword):
+    # check user item
+    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+    if not db_user:
+        return None
+    # take current pswd and compare with inputed old password
+    if not security.verify_password(change_pswd.old_password,db_user.hashed_password):
+        return None
+    else:
+        # hash the new pswd and write
+        db_user.hashed_password = security.get_password_hash(change_pswd.new_password)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+
 
 def delete_user(db:Session,user_id:int):
     # find and check existance 
