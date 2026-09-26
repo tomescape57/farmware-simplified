@@ -28,6 +28,12 @@ def get_user_byname(db:Session,username:str):
     return db.query(models.User).filter(models.User.username == username).first()
 def get_user_byemail(db:Session,email:str):
     return db.query(models.User).filter(models.User.email == email).first()
+def get_user_byname_oremail(db:Session,identifier:str):
+    user = db.query(models.User).filter(models.User.username == identifier).first()
+    if user:
+        return user
+    return db.query(models.User).filter(models.User.email == identifier).first()
+
 
 def update_user(db:Session, user_id:int, update_data: schemas.UserUpdate):
     # find the user to update
@@ -50,12 +56,11 @@ def change_pswd(db:Session,user_id:int,change_pswd: schemas.ChangePassword):
     # take current pswd and compare with inputed old password
     if not security.verify_password(change_pswd.old_password,db_user.hashed_password):
         return None
-    else:
-        # hash the new pswd and write
-        db_user.hashed_password = security.get_password_hash(change_pswd.new_password)
-        db.commit()
-        db.refresh(db_user)
-        return db_user
+    # hash the new pswd and write
+    db_user.hashed_password = security.get_password_hash(change_pswd.new_password)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 
 def delete_user(db:Session,user_id:int):

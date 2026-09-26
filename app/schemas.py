@@ -16,7 +16,7 @@ class UserBase(BaseModel):
     role: UserRole
 
 # pwd separated
-class UserCreate(UserBase):
+class UserCreate(UserBase): # Used as user register
     password: str = Field(min_length=8,max_length=25)  
 
 class UserUpdate(BaseModel):
@@ -31,11 +31,18 @@ class ChangePassword(BaseModel):
 # 返回给前端的模具（隐藏敏感信息）
 class UserResponse(UserBase):
     id: int
-    username:str
-    role: str
     created_at: datetime
     # 核心配置：允许 Pydantic 直接从 SQLAlchemy 的数据库对象中提取属性
     model_config = {"from_attributes": True}
+
+# Auth related schemas
+class UserLogin(BaseModel):
+    username:str = Field(min_length=2,max_length=50) # can be name or email, decide later in crud
+    password:str = Field(min_length=8,max_length=25)
+
+class Token(BaseModel):
+    access_tokens:str
+    token_type:str="bearer"
 
 
 
