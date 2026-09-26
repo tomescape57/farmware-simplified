@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime,timedelta,timezone
 from fastapi import HTTPException
 
-SECRET_KEY = "testkeytestkey"
+SECRET_KEY = "testkeytestkeytestkeytestkey123"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120
 

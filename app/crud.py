@@ -29,11 +29,11 @@ def get_user_byname(db:Session,username:str):
 def get_user_byemail(db:Session,email:str):
     return db.query(models.User).filter(models.User.email == email).first()
 def get_user_byname_oremail(db:Session,identifier:str):
-    user = db.query(models.User).filter(models.User.username == identifier).first()
-    if user:
-        return user
-    return db.query(models.User).filter(models.User.email == identifier).first()
-
+    user = db.query(models.User).filter(
+        (models.User.username == identifier)|
+        (models.User.email == identifier)
+    ).first()
+    return user
 
 def update_user(db:Session, user_id:int, update_data: schemas.UserUpdate):
     # find the user to update

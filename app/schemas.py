@@ -41,7 +41,7 @@ class UserLogin(BaseModel):
     password:str = Field(min_length=8,max_length=25)
 
 class Token(BaseModel):
-    access_tokens:str
+    access_token:str
     token_type:str="bearer"
 
 
