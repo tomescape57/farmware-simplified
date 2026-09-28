@@ -47,7 +47,6 @@ class Token(BaseModel):
 
 
 # 2. ItemTemplate 相关的 Schemas
-
 class ItemTemplateBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     sku: str = Field(min_length=1, max_length=50)
@@ -66,8 +65,9 @@ class ItemTemplateUpdate(BaseModel):
 class ItemTemplateResponse(ItemTemplateBase):
     id: int
     created_at: datetime
-
     model_config = {"from_attributes": True}
+
+
 
 
 # 3. schemas of inventory

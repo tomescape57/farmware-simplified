@@ -62,7 +62,6 @@ def change_pswd(db:Session,user_id:int,change_pswd: schemas.ChangePassword):
     db.refresh(db_user)
     return db_user
 
-
 def delete_user(db:Session,user_id:int):
     # find and check existance 
     db_user = db.query(models.User).filter(models.User.id==user_id).first() # when call db, there is a tracker added to the var by (sqlalchemy?)
@@ -91,6 +90,29 @@ def create_item_template(db:Session, item_template: schemas.ItemTemplateCreate):
 
 def get_item_template(db:Session, item_template_id:int):
     return db.query(models.ItemTemplate).filter(models.ItemTemplate.id == item_template_id).first()
+def get_item_template_byname(db:Session, item_template_name:str):
+    return db.query(models.ItemTemplate).filter(models.ItemTemplate.name == item_template_name).first()
+def get_item_template_bysku(db:Session, item_template_sku:str):
+    return db.query(models.ItemTemplate).filter(models.ItemTemplate.sku == item_template_sku).first()
+
+def update_item_template(db:Session, template_id:int,update_data:schemas.ItemTemplateUpdate):
+    db_template = db.query(models.ItemTemplate).filter(models.ItemTemplate.id==template_id).first()
+    if not db_template: return None
+    # take non none data only
+    update_data = update_data.model_dump(exclude_unset=True)
+    for field,value in update_data.items():
+        setattr(db_template,field,value)
+    db.commit()
+    db.refresh(db_template)
+    return db_template
+
+def delete_item_template(db:Session,template_id:int):
+    db_item_template = db.query(models.ItemTemplate).filter(models.ItemTemplate.id==template_id).first()
+    if not db_item_template:
+        return None
+    db.delete(db_item_template)
+    db.commit()
+    return True
 
 
 
