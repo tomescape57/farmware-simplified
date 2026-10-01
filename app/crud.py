@@ -130,6 +130,24 @@ def create_inventory(db:Session, inventory:schemas.InventoryCreate):
 def get_inventory(db:Session, inventory_id:int):
     return db.query(models.Inventory).filter(models.Inventory.id == inventory_id).first()
 
+def update_inventory(db:Session, inventory_id:int, update_data:schemas.InventoryUpdate):
+    db_inventory = db.query(models.Inventory).filter(models.Inventory.id==inventory_id).first()
+    if not db_inventory: return None
+    # non none field only
+    update_data = update_data.model_dump(exclude_unset=True)
+    for filed,value in update_data.items():
+        setattr(db_inventory,filed,value)
+    db.commit()
+    db.refresh(db_inventory)
+    return db_inventory
+
+def delete_inventory(db:Session, inventory_id:int):
+    db_inventory = db.query(models.Inventory).filter(models.Inventory.id==inventory_id).first()
+    if not db_inventory:
+        return None
+    db.delete(db_inventory)
+    db.commit()
+    return True
 
 
 

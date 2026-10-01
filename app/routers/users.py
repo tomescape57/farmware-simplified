@@ -17,15 +17,15 @@ router = APIRouter(
 
 # create user (POST
 @router.post("/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(_user:schemas.UserCreate, db:Session=Depends(get_db)):
+async def create_user(user:schemas.UserCreate, db:Session=Depends(get_db)):
     # check if user exists
-    existing = crud.get_user_byname(db=db, username=_user.username)
+    existing = crud.get_user_byname(db=db, username=user.username)
     if existing:
         raise HTTPException(status_code=400, detail="user exists")
-    existing = crud.get_user_byemail(db=db, email=_user.email)
+    existing = crud.get_user_byemail(db=db, email=user.email)
     if existing:
         raise HTTPException(status_code=400, detail="user exists")
-    return crud.create_user(db=db, user=_user)
+    return crud.create_user(db=db, user=user)
     
 
 

@@ -38,7 +38,8 @@ async def read_item_template(item_template_id:int, db:Session=Depends(get_db)):
 # update (PUT)
 @router.put("/{item_template_id}",response_model=schemas.ItemTemplateResponse)
 async def update_item_template(item_template_id:int,
-                               update_data:schemas.ItemTemplateUpdate,db:Session=Depends(get_db)):
+                               update_data:schemas.ItemTemplateUpdate,
+                               db:Session=Depends(get_db)):
     # check exist
     existing = crud.get_item_template(db,item_template_id)
     if not existing:

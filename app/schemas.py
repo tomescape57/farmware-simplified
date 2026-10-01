@@ -71,10 +71,9 @@ class ItemTemplateResponse(ItemTemplateBase):
 
 
 # 3. schemas of inventory
-
 class InventoryBase(BaseModel):
     template_id: int
-    quantity: int
+    quantity: int = Field(default=0,ge=0)
     
 class InventoryCreate(InventoryBase):
     pass
@@ -87,6 +86,8 @@ class InventoryResponse(InventoryBase):
     id: int
     created_at: datetime
     model_config = {"from_attributes":True}
+
+
 
 # 4. schemas of logs
     #inventory log
