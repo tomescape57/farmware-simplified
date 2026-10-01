@@ -23,3 +23,20 @@ Run (under venv!):
 python3 -m uvicorn app.main:app --reload
 
 changed my email sep22 26.
+
+
+=== before run ===
+# venv
+sudo apt install python3-venv
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+
+# 
+pip install uvicorn fastapi sqlalchemy
+pip install passlib bcrypt
+pip install email-validator
+pip install PyJWT
+
+=== RUN ===
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
