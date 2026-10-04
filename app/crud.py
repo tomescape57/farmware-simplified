@@ -152,29 +152,50 @@ def delete_inventory(db:Session, inventory_id:int):
 
 
 # Logs CRUD (Read Only)
+def create_log(db: Session, log: schemas.OperationLogCreate):
+    try:
+        db_log = models.OperationLog(
+            user_id = log.user_id,
+            target_table = log.target_table,
+            target_id = log.target_id,
+            action = log.action,
+            detail = log.detail
+        )
+        db.add(db_log)
+        db.commit()
+        db.refresh(db_log)
+        return db_log
+    except Exception:
+        db.rollback()
+        raise
 
-# 1. 获取某个特定库存的所有操作历史（最常用）
-def get_inventory_logs_by_item(db: Session, inventory_id: int, skip: int = 0, limit: int = 100):
-    return (
-        db.query(models.InventoryLog)
-        .filter(models.InventoryLog.inventory_id == inventory_id)
-        .order_by(models.InventoryLog.time_stamp.desc()) # 最新的操作排在最前面
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+def get_log(db: Session, log_id: int):
+    return db.query(models.OperationLog).filter(models.OperationLog.id == log_id).first()
 
-# 2. 获取某个特定模板的所有操作历史
-def get_template_logs_by_item(db: Session, template_id: int, skip: int = 0, limit: int = 100):
-    return (
-        db.query(models.TemplateLog)
-        .filter(models.TemplateLog.template_id == template_id)
-        .order_by(models.TemplateLog.time_stamp.desc())
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+def get_logs(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    user_id: int | None = None,
+    target_table: str | None = None,
+    action: str | None = None,
+):
+    query = db.query(models.OperationLog)
 
-# 3. 获取全局日志列表（通常只有 Admin 才能看）
-def get_all_inventory_logs(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.InventoryLog).order_by(models.InventoryLog.time_stamp.desc()).offset(skip).limit(limit).all()
+    if user_id is not None:
+        query = query.filter(models.OperationLog.user_id == user_id)
+    if target_table is not None:
+        query = query.filter(models.OperationLog.target_table == target_table)
+    if action is not None:
+        query = query.filter(models.OperationLog.action == action)
+
+    return query.offset(skip).limit(limit).all()
+
+def delete_log(db: Session, log_id: int):
+    db_log = db.query(models.OperationLog).filter(models.OperationLog.id == log_id).first()
+    if not db_log:
+        return None
+    db.delete(db_log)
+    db.commit()
+    return True
+

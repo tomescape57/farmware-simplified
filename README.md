@@ -32,7 +32,7 @@ rm -rf venv
 python3 -m venv venv
 source venv/bin/activate
 
-# 
+
 pip install uvicorn fastapi sqlalchemy
 pip install passlib bcrypt
 pip install email-validator

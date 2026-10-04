@@ -6,7 +6,7 @@ from typing import Optional
 from datetime import datetime
 from app.types import UserRole
 from app.utils import security
-
+from app import types
 
 # 1. User 相关的 Schemas
 # 基础类：把 Create 和 Response 共有的字段抽出来，减少重复代码
@@ -89,25 +89,18 @@ class InventoryResponse(InventoryBase):
 
 
 
-# 4. schemas of logs
-    #inventory log
-class InventoryLogBase(BaseModel):
-    operation_type: str = Field(min_length=1,max_length=20)
-    quantity_before: int
-    quantity_after: int
-    time_stamp: datetime
 
-class InventoryLogResponse(InventoryLogBase):
-    id: int
+# 4. logs
+class OperationLogBase(BaseModel):
+    user_id: int
+    target_table: str
+    target_id: Optional[int] = None
+    action: types.ActionType
+    detail: Optional[str] = Field(default=None, max_length=500)
+    
+class OperationLogCreate(OperationLogBase):
+    pass
+
+class OperationLogResponse(OperationLogBase):
+    created_at: datetime
     model_config = {"from_attributes":True}
-
-    #template log
-class TemplateLogBase(BaseModel):
-    operation_type: str = Field(min_length=1,max_length=20)
-    time_stamp: datetime
-
-class TemplateLogResponse(TemplateLogBase):
-    id: int
-    model_config = {"from_attributes":True}
-
-
